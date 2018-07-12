@@ -1,0 +1,31 @@
+
+
+
+
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       App.index
+GET     /img                                    StaticFiles.image
+GET     /sounds/{code}/{f}                      AudioController.sound
+GET     /sounds/{code}                          AudioController.sound
+GET     /image/upload                           ImageController.plainUpload
+POST    /image/upload                           ImageController.plainUpload
+POST    /image/uploadBase64                     ImageController.plainUploadBase64
+POST    /sound/uploadBase64                     AudioController.plainUploadBase64
+POST    /image/remove                           ImageController.removeImage
+
+GET     /docs                                   APIDoc.index
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+GET     /assets/                                staticDir:assets
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

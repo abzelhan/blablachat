@@ -1,0 +1,103 @@
+<!doctype html>
+<!--[if lt IE 8]>         <html class="no-js lt-ie8"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head data-ng-controller="Page">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Administrator</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    <!-- Needs images, font... therefore can not be part of main.css -->
+    <link rel="stylesheet" href="/assets/fonts/themify-icons/themify-icons.min.css">
+    <link rel="stylesheet" href="/assets/bower_components/weather-icons/css/weather-icons.min.css">
+    <!-- end Needs images -->
+
+    <link rel="stylesheet" href="/assets/bower_components/ui-select/select.min.css"/>
+
+    <link rel="stylesheet" href="/assets/bower_components/angucomplete/angucomplete.css"/>
+    <link rel="stylesheet" href="/assets/bower_components/angular-datepicker/dist/angular-datepicker.css"/>
+
+    <link rel="stylesheet" href="/assets/bower_components/ng-table/ng-table.min.css"/>
+    <link rel="stylesheet" href="/assets/bower_components/angular-multi-select/isteven-multi-select.css"/>
+
+    <link rel="stylesheet" href="/assets/styles/main.css">
+
+</head>
+<body data-ng-app="app" id="app" class="app" data-custom-page data-off-canvas-nav data-ng-controller="AppCtrl"
+      data-ng-class=" {'layout-boxed': admin.layout === 'boxed'} ">
+<!--[if lt IE 9]>
+<div class="lt-ie9-bg">
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser.</p>
+    <p>Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+</div>
+<![endif]-->
+
+<section data-ng-include=" '/assets/views/header.html' " id="header" class="header-container"
+         data-ng-controller="HeaderCtrl" data-ng-class="{ 'header-fixed': admin.fixedHeader,
+                                  'bg-white': ['11','12','13','14','15','16','21'].indexOf(admin.skin) >= 0,
+                                  'bg-dark': admin.skin === '31',
+                                  'bg-primary': ['22','32'].indexOf(admin.skin) >= 0,
+                                  'bg-success': ['23','33'].indexOf(admin.skin) >= 0,
+                                  'bg-info-alt': ['24','34'].indexOf(admin.skin) >= 0,
+                                  'bg-warning': ['25','35'].indexOf(admin.skin) >= 0,
+                                  'bg-danger': ['26','36'].indexOf(admin.skin) >= 0
+                 }"></section>
+
+<div class="main-container">
+    <aside data-ng-include=" '/assets/views/nav.html' " id="nav-container" class="nav-container" data-ng-class="{ 'nav-fixed': admin.fixedSidebar,
+                                    'nav-horizontal': admin.menu === 'horizontal',
+                                    'nav-vertical': admin.menu === 'vertical',
+                                    'bg-white': ['31','32','33','34','35','36'].indexOf(admin.skin) >= 0,
+                                    'bg-dark': ['31','32','33','34','35','36'].indexOf(admin.skin) < 0
+                   }">
+    </aside>
+
+    <div id="content" class="content-container">
+        <section data-ng-view class="view-container {{admin.pageTransition.class}}"></section>
+    </div>
+</div>
+
+
+<script src="/assets/scripts/vendor.js"></script>
+<script src="/assets/scripts/ui.js"></script>
+<script src="/assets/bower_components/ui-select/select.js"></script>
+<script src="/assets/bower_components/angucomplete/angucomplete-alt.min.js"></script>
+<script src="/assets/bower_components/ng-table/ng-table.min.js"></script>
+<script src="/assets/bower_components/angular-multi-select/isteven-multi-select.js"></script>
+
+<script src="/assets/scripts/ng-admin/ng-admin.min.js"></script>
+
+<!--<script data-require="angular-resource@@1.2.0-rc.3" data-semver="1.2.0-rc.3" src="http://code.angularjs.org/1.2.0-rc.3/angular-resource.js"></script>-->
+<script data-require="angular-resource@@1.2.0-rc.3" data-semver="1.2.0-rc.3"
+        src="/assets/scripts/angular-resource.js"></script>
+
+<script src="/assets/scripts/ya-map-2.1.min.js"></script>
+<script src="/assets/bower_components/angularUtils-pagination/dirPagination.js"></script>
+<script src="/assets/bower_components/angular-datepicker/dist/angular-datepicker.js"></script>
+<script src="/assets/bower_components/moment/moment.js"></script>
+<script src="/assets/scripts/shared/main.js"></script>
+<script src="/assets/scripts/shared/directives.js"></script>
+<script src="/assets/scripts/shared/localize.js"></script>
+<script src="/assets/scripts/shared/Nav.js"></script>
+<script src="/assets/scripts/UI/UICtrl.js"></script>
+<script src="/assets/scripts/UI/UIDirective.js"></script>
+<script src="/assets/scripts/UI/UIService.js"></script>
+<script src="/assets/scripts/Form/FormDirective.js"></script>
+<script src="/assets/scripts/Form/FormCtrl.js"></script>
+<script src="/assets/scripts/Form/FormValidation.js"></script>
+<script src="/assets/scripts/Table/TableCtrl.js"></script>
+<script src="/assets/scripts/Task/Task.js"></script>
+<script src="/assets/scripts/Chart/ChartCtrl.js"></script>
+<script src="/assets/scripts/Chart/ChartDirective.js"></script>
+<script src="/assets/scripts/Page/PageCtrl.js"></script>
+<script src="/assets/scripts/App/SignInCtrl.js"></script>
+<script src="/assets/scripts/App/api.js"></script>
+<script src="/assets/scripts/Crud/crudList.js"></script>
+<script src="/assets/scripts/Crud/crudPreview.js"></script>
+<script src="/assets/scripts/Crud/crudEdit.js"></script>
+<script src="/assets/scripts/Crud/crudDashboard.js"></script>
+
+<script src="/assets/scripts/app.js"></script>
+</body>
+</html>

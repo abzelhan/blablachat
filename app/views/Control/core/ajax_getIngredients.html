@@ -1,0 +1,5 @@
+#{list items:list, as: "i"}
+<option value="${i.id}">
+    ${i.title} #{if i.liquid}(жидкий)#{/if}
+</option> 
+#{/list}

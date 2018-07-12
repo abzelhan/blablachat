@@ -1,0 +1,27 @@
+error.json_parameter.not_exist = '%s' json parameter not exist in params object. This parameter is required.
+error.json_parameter.not_exist_or_empty = '%s' json parameter not exist in params object or is empty. This parameter is required.
+error.json_parameter.out_of_range = '%s' json parameter length is not in range. Range min - '%d' and max - '%d'
+error.json_parameter.unknown_format = '%s' json parameter has unknown format. Valid format '%s'
+error.json_parameter.value_invalid = '%s' json parameter has unknown value - '%s'.
+error.json_parameter.invalid_type = '%s' json parameter has unknown type. Required type is - %s.
+error.database.element.not_found = Element with value '%s' not found
+error.database.element.already_exist = Field '%s' with value '%s' already exist
+
+error.room.exclude.self = You can't exclude yourself from room
+error.room.delete.self = You can't delete yourself from room
+error.room.block.self = You can't block yourself from room
+
+error.room.exclude.admin = You can't exclude admin from room
+error.room.delete.admin = You can't delete admin from room
+error.room.block.admin = You can't block admin from room
+
+error.room.delete = Only admin can delete a group
+error.room.exclude = Only admin can exclude a users from group
+error.room.block = Only admin can block a users from group
+
+error.auth = You need to log in
+error.auth.not_found = The username or password is incorrect
+success.login = Successfully authorized
+success.registration = Successfully registered
+success.deleted = Successfully deleted
+success.logout = Successfully logged out

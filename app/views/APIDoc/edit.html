@@ -1,0 +1,26 @@
+#{extends 'admin.html' /}
+#{set title:'Test API' /}
+
+<div class="container">
+    <form action="@{APIDoc.save()}" method="POST">
+        <div class="row-fluid">
+            <input type="hidden" name="method.id" value="${method.id}"/>
+            <input type="hidden" name="method.name" value="${method.name}"/>
+            <h3>${method.name}</h3>
+
+            <label>Description:</label>
+            <textarea name="method.description">${method.description}</textarea>
+        </div>
+
+    #{list items:method.params,as:"param"}
+        <div class="row-fluid">
+            <label>${param.name} [${param.type}] #{if param.required}<span
+                    style="color:red;font-size:12px;"> *required</span>#{/if}</label>
+            <input type="hidden" name="params[${param_index}].id" value="${param.id}"/>
+            <textarea name="params[${param_index}].description">${param.description}</textarea>
+        </div>
+    #{/list}
+
+        <input type="submit" value="SAVE"/>
+    </form>
+</div>

@@ -1,0 +1,59 @@
+#{extends 'admin.html' /}
+#{set title:'Test API' /}
+
+<form action="@{App.run()}" method="GET">
+    <p>Data:</p>
+
+    <div>
+        <textarea id="data" name="data" cols="150" rows="20">
+            {}
+        </textarea>
+    </div>
+
+    <p>UserID:</p>
+
+    <div>
+        <input type="text" id="userid" name="userid" value="1"/>
+    </div>
+
+    <p>checksum:(only prod)</p>
+
+    <div>
+        <input type="text" id="checksum" name="checksum" value=""/>
+    </div>
+    <br/>
+
+    <button type="button" onclick="run()">RUN -></button>
+</form>
+
+<hr/>
+<div id="url">
+</div>
+<hr/>
+<div id="result">
+</div>
+
+<script type="text/javascript">
+    var count = 0;
+    function run() {
+        count++;
+
+        var data = $("#data").val();
+        var userid = $("#userid").val();
+        var checksum = $("#checksum").val();
+        var url = "@{App.run()}?data=" + data + "&userid=" + userid + "&checksum=" + checksum;
+        $("#url").html("calling url #" + (count) + " : " + url);
+        $("#result").html('');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function (msg) {
+                $("#result").html("Got result on #"+count+": " + JSON.stringify(msg));
+            },
+            error: function (msg) {
+                $("#result").html("Got error on  #"+count+": " + JSON.stringify(msg));
+            }
+        });
+    }
+</script>

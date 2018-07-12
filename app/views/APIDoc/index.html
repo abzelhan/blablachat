@@ -1,0 +1,8 @@
+#{extends 'admin.html' /}
+#{set title:'Test API' /}
+
+<div class="container">
+#{list items:injectNav,as:"navs"}
+    <a href="@{APIDoc.api(navs)}" class="btn btn-info">${navs}</a>
+#{/list}
+</div>

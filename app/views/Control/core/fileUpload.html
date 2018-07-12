@@ -1,0 +1,57 @@
+
+<input type="file" id="logo" onchange="uploadImage(#{if object}${object.id}#{/if}#{else}0#{/else})" name="logo"/>
+<input type="hidden" id="logo_id" name="logo_id" value="">
+<span id="div_logo"></span>
+<div id="logoDiv">
+    <div class="row-fluid">
+        <div class="thumbnail span3 offset2" id="mainLogo">
+            #{if object?.picture}
+            <a href="${object?.picture?.viewUrl}" target="_blank">
+                <img data-target="256:192" src="${object?.picture?.viewUrl}?w=250" id="img_${object?.picture?.id}"/>
+            </a>
+            #{/if}
+        </div>
+    </div>
+</div>
+
+#{set 'scripts'}
+#{get 'scripts'/}
+<script type="text/javascript">
+    function uploadImage(obj_id)
+    {
+        $("#div_logo").html("<span style='color:#5566aa;'>Загружаю</span>");
+        var id = "logo";
+        //Загружаем фото на сервер
+        $.ajaxFileUpload({ 
+            url:'@{Control.imgUpload}',
+            secureuri:false,
+            fileElementId:id,
+            dataType: 'script',
+            success: function (imageId, status)
+            {
+                //Получили id FileEntity
+                $("#div_"+id).html("<span style='color:#5566aa;'>Загружено</span>");
+                //Присваиваем его в logo_id, что бы при submit это передалось на сервер и что бы там записать его 
+                $("#logo_id").val(imageId);
+                //Получаем урл-ку картинки
+                $.ajax({
+                    type: 'POST',
+                    url: '@{Control.getImageUrlById()}?id='+imageId,
+                    success: function(imgUrl)
+                    {
+                        //Подгружаем основную картинку
+                        $("#mainLogo").html('<span>original</span><a href="'+imgUrl+'" target="_blank"><img data-target="4:3" src="'+imgUrl.replace('-1','256')+'" id="img_'+imageId+'"/></a>');
+                        $("#logo").val('');
+                    }
+                });
+            },
+            error: function (data, status, e)
+            {
+                $("#div_"+id).html('Произошла ошибка');
+            }
+        });
+        return false;
+    }  
+</script>
+
+#{/set}

@@ -1,0 +1,78 @@
+<html>
+<head>
+    <title>Feedbook</title>
+    <!--<link rel="stylesheet" href="../public/site/css/style.css">-->
+    <link rel="stylesheet" href="../public/site/css/responsive.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+#{if source=='android'}
+    <meta name="google-play-app" content="app-id=kz.smartfuture.muzart">
+    <link rel="stylesheet" href="/public/javascripts/smartbanner/jquery.smartbanner.css" type="text/css" media="screen">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="/public/javascripts/smartbanner/jquery.smartbanner.js"></script>
+    <script type="text/javascript">
+        $.smartbanner({
+            title: 'Feedbook App',
+            author: 'Smart Future'
+        });
+    </script>
+#{/if}
+
+</head>
+<body>
+#{if source=='ios'}
+<a id="link" onClick="javascript:try_to_open_app();" href="feedbook://?code=${place.code}">
+    <img src="${place.logo?.imgUrl(100,-1)}" class="place-img"/>
+</a>
+
+<script language="javascript">
+    var timeout;
+    /*function open_appstore() {
+        window.location = 'feedbook://?code=${place.code}';
+        }
+
+        function try_to_open_app() {
+            //timeout = setTimeout('open_appstore()', 300);
+            $.ajax({
+                url: "feedbook://?code=${place.code}",
+                error: function () {
+                    window.location = "http://itunes.com/apps/feedbook";
+                },
+                success: function () {
+                    window.location = 'feedbook://?code=${place.code}';
+                },
+                timeout: 3000 // sets timeout to 3 seconds
+            });
+        }*/
+
+    function open_appstore() {
+        window.location = 'http://itunes.com/apps/feedbook';
+    }
+
+    function try_to_open_app() {
+        window.addEventListener('pagehide', preventPopup);
+        timeout = setTimeout('open_appstore()', 300);
+    }
+
+    function preventPopup() {
+        clearTimeout(timeout);
+        timeout = null;
+        window.removeEventListener('pagehide', preventPopup);
+    }
+
+    preventPopup();
+    document.getElementById('link').click();
+
+
+</script>
+#{/if}
+#{else}
+<a id="link" href="market://details?id=kz.smartfuture.muzart">
+    <img src="${place.logo?.imgUrl(100,-1)}" class="place-img"/>
+</a>
+
+<script language="javascript">
+    //window.location.href = "market://details?id=kz.smartfuture.muzart";
+</script>
+#{/else}
+</body>
+</html>

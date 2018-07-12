@@ -1,0 +1,280 @@
+<div id="file-uploader">
+    <noscript>
+        <p>Please enable JavaScript to use file uploader.</p>
+        <!-- or put a simple form for upload here -->
+    </noscript>
+
+    <script>
+        function createUploader() {
+            var uploader = new qq.FileUploader({
+                element:document.getElementById('file-uploader'),
+                action:'@{Control.upload()}?id=${object?.id}',
+                showMessage: function(message) {
+                    console.log('callback message');
+                },
+                callbacks:{
+                    onComplete:function (id, fileName, responseJSON) {
+                        console.log('callback');
+                        var imageId = 0;
+                        $.ajax({
+                            type:'POST',
+                            url:'@{Control.getLast()}',
+                            success:function (imgUrl) {
+                                imageId = imgUrl;
+                                //Присваиваем его в logo_id, что бы при submit это передалось на сервер и что бы там записать его
+                                var l = $("#logo_id").val();
+                                if (l.length > 0) {
+                                    l += ",";
+                                }
+                                $("#logo_id").val(l + imageId);
+                                //Получаем урл-ку картинки
+                                $.ajax({
+                                    type:'POST',
+                                    url:'@{Control.getImageUrlById()}?id=' + imageId,
+                                    success:function (imgUrl) {
+                                        //Подгружаем основную картинку
+                                        var d = $("#mainLogo").html();
+                                        $("#mainLogo").append('<div id="icon-' + imageId + '"><a href="' + imgUrl + '" target="_blank"><img src="' + imgUrl.replace('-1', '256') + '" id="img_' + imageId + '"/></a><p style="padding:5px 5px;"><a href="javascript:void(0);" onclick="removeImage(' + imageId + ')">Удалить</a> | <a href="javascript:void(0);" onclick="upImage(' + imageId + ')">Наверх</a> | <a href="javascript:void(0);" onclick="downImage(' + imageId + ')">Вниз</a></p></div>');
+                                        $("#logo").val('');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+                debug:true
+            });
+        }
+
+        // in your app create uploader as soon as the DOM is ready
+        // don't wait for the window to load
+        window.onload = createUploader;
+    </script>
+</div>
+<input type="hidden" id="logo_id" name="logo_id" value="${object?.filesIds}">
+<span id="div_logo"></span>
+<div id="logoDiv">
+    <div class="row-fluid">
+        <div class="thumbnail span3 offset2" id="mainLogo">
+        #{list items:object?.files, as: "i"}
+            <div id="icon-${i.id}">
+                <a href="${i.viewUrl}" target="_blank">
+                    <img src="${i.viewUrl}?w=250" id="img_${i.id}"/>
+                </a>
+
+                <p style="padding:5px 5px;">
+                    <a href="javascript:void(0);" onclick="removeImage(${i.id})">Удалить</a> |
+                    <a href="javascript:void(0);" onclick="upImage(${i.id})">Наверх</a> |
+                    <a href="javascript:void(0);" onclick="downImage(${i.id})">Вниз</a>
+                </p>
+            </div>
+        #{/list}
+        </div>
+    </div>
+</div>
+#{set 'scripts'}
+    #{get 'scripts'/}
+<script src="@{'/public/javascripts/client/fileuploader.js'}" type="text/javascript"></script>
+<script type="text/javascript">
+    function upImage(id) {
+        $.ajax({
+            type:'POST',
+            url:'@{Control.upImage()}?id=' + id,
+            success:function (afterId) {
+                location.reload();
+                /*var cur = $("#icon-"+id).html();
+                $("#icon-"+afterId).insertBefore(cur);
+                $("#icon-"+id).remove();*/
+            }
+        });
+    }
+    function downImage(id) {
+        $.ajax({
+            type:'POST',
+            url:'@{Control.downImage()}?id=' + id,
+            success:function (afterId) {
+                location.reload();
+                /*var cur = $("#icon-"+id).html();
+                $("#icon-"+afterId).insertAfter(cur);
+                $("#icon-"+id).remove();*/
+            }
+        });
+    }
+    function removeImage(id) {
+        console.log("trying to remove icon: " + id);
+        $.ajax({
+            type:'POST',
+            url:'@{Control.removeImage()}?id=' + id,
+            success:function (imgUrl) {
+                $("#icon-" + id).hide();
+                var logo = $("#logo_id").val();
+                if (logo.indexOf(",") == -1) {
+                    $("#logo_id").val("");
+                } else {
+                    if (logo.indexOf("," + id) == -1) {
+                        $("#logo_id").val(logo.replace("," + id, ""));
+                    } else {
+                        $("#logo_id").val(logo.replace(id + ",", ""));
+                    }
+                }
+            }
+        });
+    }
+    /*function uploadImage(obj_id)
+    {
+        $("#div_logo").html("<span style='color:#5566aa;'>Загружаю</span>");
+        var id = "logo";
+        //Загружаем фото на сервер
+        $.ajaxFileUpload({
+            url:'@{Control.imgUpload}',
+            secureuri:false,
+            fileElementId:id,
+            dataType: 'script',
+            success: function (imageId, status)
+            {
+                //Получили id FileEntity
+                $("#div_"+id).html("<span style='color:#5566aa;'>Загружено</span>");
+                //Присваиваем его в logo_id, что бы при submit это передалось на сервер и что бы там записать его
+                var l = $("#logo_id").val();
+                if (l.length>0){
+                    l += ",";
+                }
+                $("#logo_id").val(l+imageId);
+                //Получаем урл-ку картинки
+                $.ajax({
+                    type: 'POST',
+                    url: '@{Control.getImageUrlById()}?id='+imageId,
+                    success: function(imgUrl)
+                    {
+                        //Подгружаем основную картинку
+                        var d = $("#mainLogo").html();
+                        $("#mainLogo").append('<div id="icon-'+imageId+'"><a href="'+imgUrl+'" target="_blank"><img src="'+imgUrl.replace('-1','256')+'" id="img_'+imageId+'"/></a><p style="padding:5px 5px;"><a href="javascript:void(0);" onclick="removeImage('+imageId+')">Удалить</a> | <a href="javascript:void(0);" onclick="upImage('+imageId+')">Наверх</a> | <a href="javascript:void(0);" onclick="downImage('+imageId+')">Вниз</a></p></div>');
+                        $("#logo").val('');
+                    }
+                });
+            },
+            error: function (data, status, e)
+            {
+                $("#div_"+id).html('Произошла ошибка');
+            }
+        });
+        return false;
+    }*/
+</script>
+#{/set}
+
+*{<input type="file" id="logo" onchange="uploadImage(#{if object}${object.id}#{/if}#{else}0#{/else})" name="logo"/>
+<input type="hidden" id="logo_id" name="logo_id" value="${object?.filesIds}">
+<span id="div_logo"></span>
+<div id="logoDiv">
+    <div class="row-fluid">
+        <div class="thumbnail span3 offset2" id="mainLogo">
+            #{list items:object?.files, as: "i"}
+            <div id="icon-${i.id}">
+                <a href="${i.viewUrl}" target="_blank">
+                    <img src="${i.viewUrl}?w=250" id="img_${i.id}"/>
+                </a>
+                <p style="padding:5px 5px;">
+                    <a href="javascript:void(0);" onclick="removeImage(${i.id})">Удалить</a> |
+                    <a href="javascript:void(0);" onclick="upImage(${i.id})">Наверх</a> |
+                    <a href="javascript:void(0);" onclick="downImage(${i.id})">Вниз</a>
+                </p>
+            </div>
+            #{/list}
+        </div>
+    </div>
+</div>
+
+#{set 'scripts'}
+#{get 'scripts'/}
+<script type="text/javascript">
+    function upImage(id){
+        $.ajax({
+            type: 'POST',
+            url: '@{Control.upImage()}?id='+id,
+            success: function(afterId)
+            {
+                location.reload();
+                /*var cur = $("#icon-"+id).html();
+                $("#icon-"+afterId).insertBefore(cur);
+                $("#icon-"+id).remove();*/
+            }
+        });
+    }
+    function downImage(id){
+        $.ajax({
+            type: 'POST',
+            url: '@{Control.downImage()}?id='+id,
+            success: function(afterId)
+            {
+                location.reload();
+                /*var cur = $("#icon-"+id).html();
+                $("#icon-"+afterId).insertAfter(cur);
+                $("#icon-"+id).remove();*/
+            }
+        });
+    }
+    function removeImage(id){
+        console.log("trying to remove icon: "+id);
+        $.ajax({
+            type: 'POST',
+            url: '@{Control.removeImage()}?id='+id,
+            success: function(imgUrl)
+            {
+                $("#icon-"+id).hide();
+                var logo = $("#logo_id").val();
+                if (logo.indexOf(",")==-1){
+                    $("#logo_id").val("");
+                }else{
+                    if (logo.indexOf(","+id)==-1){
+                        $("#logo_id").val(logo.replace(","+id,""));
+                    }else{
+                        $("#logo_id").val(logo.replace(id+",",""));
+                    }
+                }
+            }
+        });
+    }
+    function uploadImage(obj_id)
+    {
+        $("#div_logo").html("<span style='color:#5566aa;'>Загружаю</span>");
+        var id = "logo";
+        //Загружаем фото на сервер
+        $.ajaxFileUpload({ 
+            url:'@{Control.imgUpload}',
+            secureuri:false,
+            fileElementId:id,
+            dataType: 'script',
+            success: function (imageId, status)
+            {
+                //Получили id FileEntity
+                $("#div_"+id).html("<span style='color:#5566aa;'>Загружено</span>");
+                //Присваиваем его в logo_id, что бы при submit это передалось на сервер и что бы там записать его 
+                var l = $("#logo_id").val();
+                if (l.length>0){
+                    l += ",";
+                }
+                $("#logo_id").val(l+imageId);
+                //Получаем урл-ку картинки
+                $.ajax({
+                    type: 'POST',
+                    url: '@{Control.getImageUrlById()}?id='+imageId,
+                    success: function(imgUrl)
+                    {
+                        //Подгружаем основную картинку
+                        var d = $("#mainLogo").html();
+                        $("#mainLogo").append('<div id="icon-'+imageId+'"><a href="'+imgUrl+'" target="_blank"><img src="'+imgUrl.replace('-1','256')+'" id="img_'+imageId+'"/></a><p style="padding:5px 5px;"><a href="javascript:void(0);" onclick="removeImage('+imageId+')">Удалить</a> | <a href="javascript:void(0);" onclick="upImage('+imageId+')">Наверх</a> | <a href="javascript:void(0);" onclick="downImage('+imageId+')">Вниз</a></p></div>');
+                        $("#logo").val('');
+                    }
+                });
+            },
+            error: function (data, status, e)
+            {
+                $("#div_"+id).html('Произошла ошибка');
+            }
+        });
+        return false;
+    }  
+</script>
+
+#{/set}      }*
